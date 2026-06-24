@@ -1,4 +1,5 @@
 #include "lpbooster.hpp"
+
 #include "../utils/macros.hpp"
 
 #include <INIReader.h>
@@ -6,8 +7,42 @@
 #include <format>
 #include <functional>
 #include <optional>
+#include <sstream>
+#include <string>
+#include <unistd.h>
 
 namespace fs = std::filesystem;
+
+double SystemMonitoring::getFreeRamInPercentages() {
+
+  long long freePages = sysconf(_SC_AVPHYS_PAGES);
+  long long freeBytes = freePages * Config::PAGE_SIZE;
+
+  double freeRAM = static_cast<double>(freeBytes) / Config::GIGABYTE;
+
+  return ((double)freeRAM * 100.0 / (double)SystemUtils::getTotalRAM());
+}
+
+double SystemMonitoring::getFreeRamInGigabytes() {
+
+  long long freePages = sysconf(_SC_AVPHYS_PAGES);
+  long long freeBytes = freePages * Config::PAGE_SIZE;
+
+  return static_cast<double>(freeBytes) / Config::GIGABYTE;
+}
+
+std::string SystemMonitoring::getRamInText() {
+  double free = SystemMonitoring::getFreeRamInGigabytes();
+  double total = SystemUtils::getTotalRAM();
+
+  if (free <= 0 || total <= 0)
+    return std::string("Loading...");
+
+  std::stringstream ss;
+  ss << std::fixed << std::setprecision(2) << free << "GB / " << total << "GB";
+
+  return ss.str();
+}
 
 namespace LpBooster {
 
@@ -400,6 +435,9 @@ void Tools::gamingTools(Results &tools_result) {
   tools_result.isServiceCreateSuccess = createCpuService();
   tools_result.isGamingServicesSuccess = gamingServices();
   tools_result.isSplitLockSuccess = splitLock();
+  tools_result.AllSuccess = cpuPerformance() && applyTweaks() && gpuBoost() &&
+                            createCpuService() && gamingServices() &&
+                            splitLock();
 }
 
 } // namespace LpBooster

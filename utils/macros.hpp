@@ -13,10 +13,14 @@
 namespace Config {
 constexpr double GIGABYTE = 1024.0 * 1024.0 * 1024.0;
 
+const long long PAGE_SIZE = sysconf(_SC_PAGESIZE);
+
 const std::string BLOCK_PATH = "/sys/block/";
 const std::string CPU_PATH = "/sys/devices/system/cpu/";
 const std::string DRM_PATH = "/sys/class/drm/";
 const std::string BACKUP_PATH = "/var/lib/lpbooster/backup.ini";
+const std::string LOGO_PATH = "/usr/share/pixmaps";
+const std::string INFO_PATH = "/usr/lib/os-release";
 
 const std::string PERFORMANCE = "performance\n";
 const std::string POWERSAVE = "powersave";

@@ -1,12 +1,21 @@
 #pragma once
 #include "../utils/macros.hpp"
-#include "../utils/tools.hpp"
+#include "../utils/tools/tools.hpp"
 
+#include <filesystem>
 #include <functional>
 #include <optional>
 #include <string>
 
 using namespace Config;
+namespace fs = std::filesystem;
+
+class SystemMonitoring {
+public:
+  double getFreeRamInPercentages();
+  double getFreeRamInGigabytes();
+  std::string getRamInText();
+};
 
 namespace LpBooster {
 class Tools {
@@ -32,6 +41,7 @@ public:
     bool isServiceCreateSuccess;
     bool isGamingServicesSuccess;
     bool isSplitLockSuccess;
+    bool AllSuccess;
   };
 
   void cleanSystem();
